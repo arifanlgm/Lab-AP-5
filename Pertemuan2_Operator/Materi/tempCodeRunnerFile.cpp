@@ -3,10 +3,9 @@ using namespace std;
 int main(){
     system("cls");
 
-    int bilangan1 = 10;
-    int bilangan2 = 12;
-    int hasil = ~bilangan1;
-    cout << hasil;
+    int angka = 5;
 
-return 0;
+    cout << angka++;
+    
+    return 0;
 }
