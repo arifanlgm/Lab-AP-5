@@ -7,7 +7,7 @@ Kami membuat program bansos, yang dimana di dalam program tersebut kita dapat me
 ## 231401024 | Khoirul Amri Siregar
 ##
 ## Presentasi:
-https://drive.google.com/file/d/1dxz5EJ9R-E-fLuhUsuZgptdsdsrVO6nt/view?usp=drive_link
+https://drive.google.com/drive/folders/1VwXuvXLD-j3gDMrCp6GGxGww9zuDm_wX?usp=sharing
 ##
 ## Screenshot:
 ![1](https://github.com/arifanlgm/Lab-AP-5/assets/145732155/c054c3a3-3682-4e9c-983c-1d233ca8ebe6)
