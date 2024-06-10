@@ -15,10 +15,11 @@ struct Warga {
 
 class Desa {
 private:
-    vector<Warga> warga;
+    vector<Warga*> warga; // Use a vector of pointers to Warga
 
 public:
-    void tambahWarga(Warga wargaBaru);
+    ~Desa(); // Destructor
+    void tambahWarga(Warga* wargaBaru);
     void hapusWarga(string nama);
     void ubahStatusBansos(string nama, bool statusBaru);
     void tampilkanDataWarga();
@@ -26,13 +27,20 @@ public:
     int jumlahWargaBansos();
 };
 
-void Desa::tambahWarga(Warga wargaBaru) {
+Desa::~Desa() {
+    for (Warga* w : warga) {
+        delete w;
+    }
+}
+
+void Desa::tambahWarga(Warga* wargaBaru) {
     warga.push_back(wargaBaru);
 }
 
 void Desa::hapusWarga(string nama) {
-    auto it = find_if(warga.begin(), warga.end(), [&](Warga w) { return w.nama == nama; });
+    auto it = find_if(warga.begin(), warga.end(), [&](Warga* w) { return w->nama == nama; });
     if (it != warga.end()) {
+        delete *it;  // Free the memory allocated for the Warga
         warga.erase(it);
         cout << "Warga dengan nama " << nama << " berhasil dihapus." << endl;
     } else {
@@ -41,9 +49,9 @@ void Desa::hapusWarga(string nama) {
 }
 
 void Desa::ubahStatusBansos(string nama, bool statusBaru) {
-    auto it = find_if(warga.begin(), warga.end(), [&](Warga w) { return w.nama == nama; });
+    auto it = find_if(warga.begin(), warga.end(), [&](Warga* w) { return w->nama == nama; });
     if (it != warga.end()) {
-        it->statusBansos = statusBaru;
+        (*it)->statusBansos = statusBaru;
         cout << "Status bansos warga dengan nama " << nama << " berhasil diubah." << endl;
     } else {
         cout << "Warga dengan nama " << nama << " tidak ditemukan." << endl;
@@ -52,24 +60,24 @@ void Desa::ubahStatusBansos(string nama, bool statusBaru) {
 
 void Desa::tampilkanDataWarga() {
     cout << "Daftar Warga:" << endl;
-    for (Warga w : warga) {
-        cout << "Nama               : " << w.nama << endl;
-        cout << "Alamat             : " << w.alamat << endl;
-        cout << "Pendapatan         : " << w.pendapatan << endl;
-        cout << "NIK                : " << w.nik << endl;
-        cout << "No. Kartu Keluarga : " << w.noKartuKeluarga << endl;
-        cout << "Status Bansos      : " << (w.statusBansos ? "Ya" : "Tidak") << endl;
+    for (Warga* w : warga) {
+        cout << "Nama               : " << w->nama << endl;
+        cout << "Alamat             : " << w->alamat << endl;
+        cout << "Pendapatan         : " << w->pendapatan << endl;
+        cout << "NIK                : " << w->nik << endl;
+        cout << "No. Kartu Keluarga : " << w->noKartuKeluarga << endl;
+        cout << "Status Bansos      : " << (w->statusBansos ? "Ya" : "Tidak") << endl;
         cout << endl;
     }
 }
 
 void Desa::tampilkanKartuBansos(string nama) {
-    auto it = find_if(warga.begin(), warga.end(), [&](Warga w) { return w.nama == nama && w.statusBansos; });
+    auto it = find_if(warga.begin(), warga.end(), [&](Warga* w) { return w->nama == nama && w->statusBansos; });
     while (it == warga.end()) {
         cout << "Warga dengan nama " << nama << " tidak ditemukan atau tidak menerima bansos." << endl;
         cout << "Masukkan nama warga untuk mencetak kartu bansos: ";
         getline(cin, nama);
-        it = find_if(warga.begin(), warga.end(), [&](Warga w) { return w.nama == nama && w.statusBansos; });
+        it = find_if(warga.begin(), warga.end(), [&](Warga* w) { return w->nama == nama && w->statusBansos; });
     }
     cout << "\n";
     cout << "\n";
@@ -77,11 +85,11 @@ void Desa::tampilkanKartuBansos(string nama) {
     cout << "=====================================" << endl;
     cout << "           KARTU BANSOS              " << endl;
     cout << "=====================================" << endl;
-    cout << "Nama   : " << it->nama << endl;
-    cout << "Alamat : " << it->alamat << endl;
-    cout << "NIK    : " << it->nik << endl;
-    cout << "No. KK : " << it->noKartuKeluarga << endl;
-    cout << "====================================" << endl;
+    cout << "Nama   : " << (*it)->nama << endl;
+    cout << "Alamat : " << (*it)->alamat << endl;
+    cout << "NIK    : " << (*it)->nik << endl;
+    cout << "No. KK : " << (*it)->noKartuKeluarga << endl;
+    cout << "=====================================" << endl;
 }
 
 void tampilkanMenu() {
@@ -101,7 +109,6 @@ void tampilkanOpsiLanjutkan() {
 }
 
 int main() {
-
     system("cls");
     
     Desa desa;
@@ -114,20 +121,20 @@ int main() {
 
         switch (pilihan) {
             case 1: {
-                Warga wargaBaru;
+                Warga* wargaBaru = new Warga;
                 cout << "Masukkan nama                  : ";
-                getline(cin, wargaBaru.nama);
+                getline(cin, wargaBaru->nama);
                 cout << "Masukkan alamat                : ";
-                getline(cin, wargaBaru.alamat);
+                getline(cin, wargaBaru->alamat);
                 cout << "Masukkan pendapatan            : ";
-                cin >> wargaBaru.pendapatan;
+                cin >> wargaBaru->pendapatan;
                 cin.ignore();
                 cout << "Masukkan NIK                   : ";
-                getline(cin, wargaBaru.nik);
+                getline(cin, wargaBaru->nik);
                 cout << "Masukkan nomor Kartu Keluarga  : ";
-                getline(cin, wargaBaru.noKartuKeluarga);
+                getline(cin, wargaBaru->noKartuKeluarga);
                 cout << "Masukkan status bansos (1 untuk Ya, 0 untuk Tidak): ";
-                cin >> wargaBaru.statusBansos;
+                cin >> wargaBaru->statusBansos;
                 cin.ignore();
 
                 desa.tambahWarga(wargaBaru);
